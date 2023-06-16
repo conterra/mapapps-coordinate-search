@@ -25,7 +25,7 @@
             "search-ui",
             "locator-store",
             "toc",
-            "sample_helloworld"
+            "dn_coordinatesearch"
         ]
     },
     "bundles": {
@@ -67,6 +67,19 @@
                     },
                     "scale": 140000
                 }
+            }
+        },
+        "search-ui": {
+            "Config": {
+                "actions": [
+                    "zoomto",
+                    "highlight",
+                    "openpopup"
+                ],
+                "maxResultsPerGroup": 5,
+                "showTotalResultsCount": false,
+                "searchDelay": 100,
+                "zoomto-point-scale": 100000
             }
         },
         "themes": {
@@ -117,7 +130,6 @@
                             "tocToggleTool",
                             "printingToggleTool",
                             "sharelinkTool",
-                            "helloTool",
                             "IMPRINT_Imprint_CustomInfoTool",
                             "IMPRINT_Imprint_CustomInfoTool_mobile"
                         ],
