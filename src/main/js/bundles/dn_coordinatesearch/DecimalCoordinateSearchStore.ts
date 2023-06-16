@@ -30,7 +30,6 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
     private parseCoord(input: string) {
         const parts: Array<string> = input.match(/[+-]?\d+(\.\d+)?/g);
-        debugger
 
         return parts;
     }
