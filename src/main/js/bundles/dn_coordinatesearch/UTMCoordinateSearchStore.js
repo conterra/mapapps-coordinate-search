@@ -47,7 +47,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
             const isUTM = /(?<![\d])\s?(([1-5]?\d)|60)[A-Z]?(?![\d])\s\d{6}\.?\d*\s\d{1,7}\.?\d*/g;
             const possibleUTMStrings = searchString.match(isUTM);
 
-            if (possibleUTMStrings.length > 0) {
+            if (possibleUTMStrings?.length > 0) {
                 point = coordinateFormatter.fromUtm(possibleUTMStrings[0], null, "latitude-band-indicators");
                 result = this.createResult(point, possibleUTMStrings[0]);
             }
