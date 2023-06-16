@@ -18,6 +18,8 @@ import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
 import * as coordinateFormatter from "esri/geometry/coordinateFormatter";
 
+import { Resultobject } from "./Interfaces";
+
 
 export default class CoordinateSearchStore extends SyncInMemoryStore {
 
@@ -26,8 +28,9 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         coordinateFormatter.load();
     }
 
-    parseCoord(input) {
-        var parts = input.match(/[+-]?\d+(\.\d+)?/g);
+    private parseCoord(input: string) {
+        const parts: Array<string> = input.match(/[+-]?\d+(\.\d+)?/g);
+        debugger
 
         return parts;
     }
