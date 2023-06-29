@@ -1,0 +1,140 @@
+{
+    "name": "dn_coordinatesearch",
+    "version": "2.1.5-SNAPSHOT",
+    "title": "${bundleName}",
+    "description": "${bundleDescription}",
+    "vendor": "con terra GmbH",
+    "layer": "module",
+    "i18n": [
+        "bundle"
+    ],
+    "dependencies": {
+        "store-api": "^4.13.0",
+        "esri": "^4.20.0"
+    },
+    "components": [
+        {
+            "name": "DecimalCoordinateSearchStore",
+            "provides": [
+                "ct.api.Store"
+            ],
+            "propertiesConstructor": true,
+            "properties": {
+                "id": "decimalcoordinatesearchstore",
+                "title": "${ui.decimal.storeTitle}",
+                "description": "${ui.decimal.storeDescription}",
+                "useIn": [
+                    "search"
+                ],
+                "searchAttribute": "coordinates",
+                "idProperty": "id",
+                "metadata": {
+                    "fields": [
+                        {
+                            "title": "ID",
+                            "name": "id",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Longitude",
+                            "name": "longitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Latitude",
+                            "name": "latitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Coordinates",
+                            "name": "coordinates",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "UTMCoordinateSearchStore",
+            "provides": [
+                "ct.api.Store"
+            ],
+            "propertiesConstructor": true,
+            "properties": {
+                "id": "utmcoordinatesearchstore",
+                "title": "${ui.utm.storeTitle}",
+                "description": "${ui.utm.storeDescription}",
+                "useIn": [
+                    "search"
+                ],
+                "searchAttribute": "coordinates",
+                "idProperty": "id",
+                "metadata": {
+                    "fields": [
+                        {
+                            "title": "ID",
+                            "name": "id",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Longitude",
+                            "name": "longitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Latitude",
+                            "name": "latitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Coordinates",
+                            "name": "coordinates",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "GKCoordinateSearchStore",
+            "provides": [
+                "ct.api.Store"
+            ],
+            "propertiesConstructor": true,
+            "properties": {
+                "id": "gkcoordinatesearchstore",
+                "title": "${ui.gk.storeTitle}",
+                "description": "${ui.gk.storeDescription}",
+                "useIn": [
+                    "search"
+                ],
+                "searchAttribute": "coordinates",
+                "idProperty": "id",
+                "metadata": {
+                    "fields": [
+                        {
+                            "title": "ID",
+                            "name": "id",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Longitude",
+                            "name": "longitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Latitude",
+                            "name": "latitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Coordinates",
+                            "name": "coordinates",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
