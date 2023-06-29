@@ -18,41 +18,43 @@ import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
 import {load, fromLatitudeLongitude}from "esri/geometry/coordinateFormatter";
 
+import { Resultobject } from "./Interfaces";
+
 
 export default class CoordinateSearchStore extends SyncInMemoryStore {
 
-    constructor(opts) {
+    constructor(opts: object) {
         super(opts);
         load();
     }
 
-    ParseCoord(input) {
-        var parts = input.match(/[+-]?\d+(\.\d+)?/g);
+    private parseCoord(input: string) {
+        const parts: Array<string> = input.match(/[+-]?\d+(\.\d+)?/g);
 
         return parts;
     }
 
-
-    convertDMSToDD(degrees, minutes, seconds, input) {
-        var dd = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60);
-
-        return this.adjustSorW(dd, input);
-    }
-
-    convertDDMToDD(degrees, minutes, input) {
-        var dd = parseFloat(degrees) + parseFloat(minutes) / 60;
+    private convertDMSToDD(degrees: string, minutes: string, seconds: string, input: string): any {
+        const dd = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60);
 
         return this.adjustSorW(dd, input);
     }
 
-    adjustSorW(coord, string) {
+    private convertDDMToDD(degrees: string, minutes: string, input: string): any {
+        const dd = parseFloat(degrees) + parseFloat(minutes) / 60;
+
+        return this.adjustSorW(dd, input);
+    }
+
+    private adjustSorW(coord: number, string: string): number {
         if (/S/i.test(string) || /W/i.test(string)) {
             coord = coord * -1;
         } // Don't do anything for N or E
         return coord;
     }
 
-    addResultObject(results, latitude, longitude, latitudeString, longitudeString, searchString) {
+    private addResultObject(results: Array<Resultobject>, latitude: number, longitude: number,
+        latitudeString: string, longitudeString: string, searchString: string): Array<Resultobject> {
         const geometryObject = new Point({ longitude: longitude, latitude: latitude });
 
         let text = "";
@@ -71,12 +73,11 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
             geometry: geometryObject
         };
         results.push(resultObject);
+
         return results;
-
-
     }
 
-    getLatLng(latString, lngString, method) {
+    private getLatLng(latString: string, lngString: string, method: string): object | null {
         latString = latString.trim();
         lngString = lngString.trim();
 
@@ -106,7 +107,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
     }
 
-    returnExample(searchString, results) {
+    private returnExample(searchString: string, results: any): any {
         const parts = searchString.match(/[+-]?\d+(\.\d+)?/g);
 
         if (parts && parts.length > 1) {
@@ -128,7 +129,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
 
 
-    query(query = {}, options = {}) {
+    public query(query = {}, options = {}): any {
         const results = [];
 
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
@@ -250,13 +251,11 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
                         this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
                     }
                 }
-
             }
         }
 
         if (results.length == 0) {
             return this.returnExample(searchString, results);
-
         }
 
         return QueryResults(results);

@@ -18,14 +18,16 @@ import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
 import {load, fromUtm} from "esri/geometry/coordinateFormatter";
 
+import { Resultobject } from "./Interfaces";
+
 export default class CoordinateSearchStore extends SyncInMemoryStore {
 
-    constructor(opts) {
+    constructor(opts: object) {
         super(opts);
         load();
     }
 
-    createResult(point, searchString) {
+    private createResult(point: __esri.Point, searchString: string): Resultobject {
         const resultObject = {
             id: 0,
             longitude: point.longitude,
@@ -36,12 +38,11 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         return resultObject;
     }
 
-    query(query = {}, options = {}) {
+    public query(query = {}, options = {}): any {
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
 
         let point = fromUtm(searchString, null, "latitude-band-indicators");
-        let result = null;
-
+        let result: Resultobject = null;
         if (point) {
             result = this.createResult(point, searchString);
         }
