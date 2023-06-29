@@ -20,9 +20,11 @@
                 "ct.api.Store"
             ],
             "propertiesConstructor": true,
+            "enabled": false,
             "properties": {
                 "id": "decimalcoordinatesearchstore",
                 "title": "${ui.decimal.storeTitle}",
+                "showExample": false,
                 "description": "${ui.decimal.storeDescription}",
                 "useIn": [
                     "search"
@@ -61,9 +63,12 @@
                 "ct.api.Store"
             ],
             "propertiesConstructor": true,
+            "enabled": false,
             "properties": {
                 "id": "utmcoordinatesearchstore",
                 "title": "${ui.utm.storeTitle}",
+                "showExample": false,
+                "conversionMode": "latitude-band-indicators",
                 "description": "${ui.utm.storeDescription}",
                 "useIn": [
                     "search"
@@ -102,9 +107,11 @@
                 "ct.api.Store"
             ],
             "propertiesConstructor": true,
+            "enabled": false,
             "properties": {
                 "id": "gkcoordinatesearchstore",
                 "title": "${ui.gk.storeTitle}",
+                "showExample": false,
                 "description": "${ui.gk.storeDescription}",
                 "useIn": [
                     "search"

@@ -1,33 +1,36 @@
-/*
- * Copyright (C) 2023 con terra GmbH (info@conterra.de)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+///
+/// Copyright (C) 2023 con terra GmbH (info@conterra.de)
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///         http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
+///
+
 import { SyncInMemoryStore } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
 import {load, project} from "esri/geometry/projection.js";
 import SpatialReference from "esri/geometry/SpatialReference.js";
 
+import { Resultobject } from "./Interfaces";
+
 export default class CoordinateSearchStore extends SyncInMemoryStore {
 
-    constructor(opts) {
+    constructor(opts :object) {
         super(opts);
         load();
     }
 
 
-    public createResult(point : Point, label : string, result ) {
+    private createResult(point : Point, label : string, result ) : Resultobject {
         const resultObject = {
             id: result.length,
             longitude: point.longitude,
@@ -38,8 +41,29 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         return resultObject;
     }
 
+    private returnExample(searchString: string, results: any): any {
+        const parts = searchString.match(/[+-]?\d+(\.\d+)?/g);
 
-    private calculateGK(X : string, Y: string, result){
+        if (parts && parts.length > 1) {
+            const latitude = 51.935126;
+            const longitude = 7.652517;
+            const geometryObject = new Point({ longitude: longitude, latitude: latitude });
+            const resultObject = {
+                id: results.length,
+                longitude: longitude,
+                latitude: latitude,
+                coordinates: this._i18n.get().ui.gk.help,
+                geometry: geometryObject
+            };
+            results.push(resultObject);
+        }
+
+        return QueryResults(results);
+    }
+
+
+
+    private calculateGK(X : string, Y: string, result: Array<Resultobject>){
 
         const strip = parseInt(X.substring(0, 1), 10);
         const wkidBase = 31466;
@@ -52,28 +76,19 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
             spatialReference: wkid
         });
         const newPoint= project(point, SpatialReference.WGS84);
-        console.info(newPoint);
-
         const label = X +", " +Y;
-
 
         return this.createResult(newPoint, label, result);
     }
-    query(query = {}, options = {}) {
-        const results = [];
-
-
-
-
-
+    query(query = {}, options = {}) : any{
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
 
-        const possibleXRegex = /(?<![\d])[2-5]\d{6}\.?\d+(?![\d])/g
+        const possibleXRegex = /(?<![\d])[2-5]\d{6}\.?\d+(?![\d])/g;
 
-        const possibleYRegex = /(?<![\d])[5]\d{6}\.?\d+|[6][0-2]\d{5}\.?\d+(?![\d])/g
+        const possibleYRegex = /(?<![\d])[5]\d{6}\.?\d+|[6][0-2]\d{5}\.?\d+(?![\d])/g;
 
 
-        let result = [];
+        const result = [];
 
         const possibleX = searchString.match(possibleXRegex);
         const possibleY = searchString.match(possibleYRegex);
@@ -94,13 +109,13 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
         }
 
-
-        return QueryResults(result);
-
-
+        if (result.length==0 && this._properties.showExample){
+            return this.returnExample(searchString, result);
+        }
+        else{
+            return QueryResults(result);
+        }
 
     }
-
-
 
 }

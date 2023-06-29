@@ -82,6 +82,21 @@
                 "zoomto-point-scale": 100000
             }
         },
+        "dn_coordinatesearch":{
+            "DecimalCoordinateSearchStore" :{
+                "componentEnabled": false,
+                "showExample": false
+            },
+            "UTMCoordinateSearchStore" :{
+                "componentEnabled": false,
+                "showExample": false,
+                "conversionMode": "latitude-band-indicators"
+            },
+            "GKCoordinateSearchStore" :{
+                "componentEnabled": false,
+                "showExample": false
+            }
+        },
         "themes": {
             "ThemeModel": {
                 "_selectedTheme": "autumn"
