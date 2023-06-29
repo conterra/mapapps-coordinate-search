@@ -1,10 +1,11 @@
 {
     "name": "dn_coordinatesearch",
-    "version": "2.1.5-SNAPSHOT",
+    "version": "1.0.0-SNAPSHOT",
     "title": "${bundleName}",
     "description": "${bundleDescription}",
     "vendor": "con terra GmbH",
     "layer": "module",
+    "main": "",
     "i18n": [
         "bundle"
     ],

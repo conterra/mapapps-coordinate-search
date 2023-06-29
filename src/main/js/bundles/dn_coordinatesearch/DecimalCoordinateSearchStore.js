@@ -23,7 +23,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
     constructor(opts) {
         super(opts);
-        load()
+        load();
     }
 
     ParseCoord(input) {
@@ -33,13 +33,13 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
     }
 
 
-    ConvertDMSToDD(degrees, minutes, seconds, input) {
+    convertDMSToDD(degrees, minutes, seconds, input) {
         var dd = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60);
 
         return this.adjustSorW(dd, input);
     }
 
-    ConvertDDMToDD(degrees, minutes, input) {
+    convertDDMToDD(degrees, minutes, input) {
         var dd = parseFloat(degrees) + parseFloat(minutes) / 60;
 
         return this.adjustSorW(dd, input);
@@ -77,7 +77,6 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
     }
 
     getLatLng(latString, lngString, method) {
-
         latString = latString.trim();
         lngString = lngString.trim();
 
@@ -85,15 +84,15 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         let lng = null;
 
         if (latString && lngString) {
-            lat = this.ParseCoord(latString);
-            lng = this.ParseCoord(lngString);
+            lat = this.parseCoord(latString);
+            lng = this.parseCoord(lngString);
             if (method == "DMS") {
-                lat = this.ConvertDMSToDD(lat[0], lat[1], lat[2], latString);
-                lng = this.ConvertDMSToDD(lng[0], lng[1], lng[2], lngString);
+                lat = this.convertDMSToDD(lat[0], lat[1], lat[2], latString);
+                lng = this.convertDMSToDD(lng[0], lng[1], lng[2], lngString);
             }
             else if (method == "DDM") {
-                lat = this.ConvertDDMToDD(lat[0], lat[1], latString);
-                lng = this.ConvertDDMToDD(lng[0], lng[1], lngString);
+                lat = this.convertDDMToDD(lat[0], lat[1], latString);
+                lng = this.convertDDMToDD(lng[0], lng[1], lngString);
             }
             else if (method == "DD") {
                 lat = this.adjustSorW(lat[0], latString);
@@ -108,11 +107,11 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
     }
 
     returnExample(searchString, results) {
-        var parts = searchString.match(/[+-]?\d+(\.\d+)?/g);
+        const parts = searchString.match(/[+-]?\d+(\.\d+)?/g);
 
         if (parts && parts.length > 1) {
-            let latitude = 51.935126;
-            let longitude = 7.652517;
+            const latitude = 51.935126;
+            const longitude = 7.652517;
             const geometryObject = new Point({ longitude: longitude, latitude: latitude });
             const resultObject = {
                 id: results.length,
@@ -125,48 +124,31 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         }
 
         return QueryResults(results);
-
-
     }
 
 
 
     query(query = {}, options = {}) {
-
-
         const results = [];
 
-
-
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
-        let point = fromLatitudeLongitude(searchString);
-
+        const point = fromLatitudeLongitude(searchString);
 
         if (point){
             return QueryResults(this.addResultObject(results, point.latitude, point.longitude, null, null, searchString));
         }
         else{
-
-
-
-
-
-            const hasDirection = /[N|S|W|E]/i
-            const isLat = /[N|S]/i
-            const isLng = /[W|E]/i
-
-
-
-
+            const isLat = /[N|S]/i;
+            const isLng = /[W|E]/i;
 
             let lat = "";
             let lng = "";
 
-            const isLatDMS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[NSsn]?(?![\d])/g
-            const isLngDMS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[EWew]?(?![\d])/g
+            const isLatDMS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[NSsn]?(?![\d])/g;
+            const isLngDMS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[EWew]?(?![\d])/g;
 
-            const isLatDDS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?(?![\d])/g
-            const isLngDDS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWew]?(?![\d])/g
+            const isLatDDS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?(?![\d])/g;
+            const isLngDDS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWew]?(?![\d])/g;
 
             const isLatDD = /(?<![\d])[\+-]?\s?(([1-8]?\d)(\.\d{1,})?|90)\s?[:|°]?\s?[NSsn]?(?![\d])/g;
             const isLngDD = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)(\.\d{1,})?|180)\s?[:|°]?\s?[EWew]?(?![\d])/g;
@@ -202,7 +184,6 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
             possibleLngString = possibleLngString.map(s => s.trim());
 
             let hasDir = false;
-
 
             for (lat of possibleLatString) {
                 if (isLat.test(lat)) {
@@ -278,10 +259,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
         }
 
-        console.info(results);
         return QueryResults(results);
-
     }
-
 
 }

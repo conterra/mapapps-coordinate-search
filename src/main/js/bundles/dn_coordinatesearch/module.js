@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 import ".";
+import "./UTMCoordinateSearchStore";
 import "./DecimalCoordinateSearchStore";
+import "./GKCoordinateSearchStore";

@@ -15,8 +15,8 @@
  */
 module.exports = {
     root: ({
-        bundleName: "coordinatesearch",
-        bundleDescription: "coordinatesearch",
+        bundleName: "Coordinate Search",
+        bundleDescription: "The Coordinate Search bundle adds the option to search coordinates in multiple reference systems via the search-ui.",
         ui: {
             storeTitle: "CoordinateSearch (Latitude, Longitude)",
             storeDescription: "Store used to find locations based on coordinates."

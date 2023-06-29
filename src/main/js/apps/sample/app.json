@@ -25,7 +25,6 @@
             "search-ui",
             "locator-store",
             "toc",
-            "sample_helloworld",
             "dn_coordinatesearch"
         ]
     },
@@ -131,7 +130,6 @@
                             "tocToggleTool",
                             "printingToggleTool",
                             "sharelinkTool",
-                            "helloTool",
                             "IMPRINT_Imprint_CustomInfoTool",
                             "IMPRINT_Imprint_CustomInfoTool_mobile"
                         ],

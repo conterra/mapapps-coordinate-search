@@ -16,19 +16,16 @@
 import { SyncInMemoryStore } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
-import * as coordinateFormatter from "esri/geometry/coordinateFormatter";
+import {load, fromUtm} from "esri/geometry/coordinateFormatter";
 
 export default class CoordinateSearchStore extends SyncInMemoryStore {
 
     constructor(opts) {
         super(opts);
-        coordinateFormatter.load()
+        load();
     }
 
-
     createResult(point, searchString) {
-
-
         const resultObject = {
             id: 0,
             longitude: point.longitude,
@@ -40,15 +37,9 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
     }
 
     query(query = {}, options = {}) {
-        const results = [];
-
-
-
-
-
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
 
-        let point = coordinateFormatter.fromUtm(searchString, null, "latitude-band-indicators");
+        let point = fromUtm(searchString, null, "latitude-band-indicators");
         let result = null;
 
         if (point) {
@@ -64,10 +55,10 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
 
 
-            if (possibleUTMStrings && possibleUTMStrings.length > 0) {
-                point = coordinateFormatter.fromUtm(possibleUTMStrings[0], null, "latitude-band-indicators");
+            if (possibleUTMStrings?.length > 0) {
+                point = fromUtm(possibleUTMStrings[0], null, "latitude-band-indicators");
                 if (point){
-                 result = this.createResult(point, possibleUTMStrings[0]);
+                    result = this.createResult(point, possibleUTMStrings[0]);
                 }
             }
         }
@@ -81,7 +72,6 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
 
 
     }
-
 
 
 }

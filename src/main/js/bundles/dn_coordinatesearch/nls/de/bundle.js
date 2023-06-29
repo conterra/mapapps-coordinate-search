@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 module.exports = {
-    bundleName: "coordinatesearch",
-    bundleDescription: "coordinatesearch",
+    bundleName: "Koordinatensuche",
+    bundleDescription: "Das Koordinatensuche Bundle erlaubt das Suchen von Koordinaten in verschiedenen Referenzsystemen mittel der Search-UI.",
     ui: {
         decimal: {
             storeTitle: "Koordinatensuche Dezimal (Breitengrad, Längengrad)",
@@ -29,6 +29,5 @@ module.exports = {
             storeTitle: "Koordinatensuche GK (Rechtswert, Hochwert)",
             storeDescription: "Store zum finden von Standorten basierend auf Gauss Krüger Koordinaten."
         }
-
     }
 };
