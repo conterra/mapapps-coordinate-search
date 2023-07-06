@@ -5,6 +5,7 @@
     "description": "${bundleDescription}",
     "vendor": "con terra GmbH",
     "layer": "module",
+    "main": "",
     "i18n": [
         "bundle"
     ],
