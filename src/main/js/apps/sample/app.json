@@ -29,6 +29,21 @@
         ]
     },
     "bundles": {
+        "dn_coordinatesearch":{
+            "DecimalCoordinateSearchStore" :{
+                "componentEnabled": true,
+                "showExample": false
+            },
+            "UTMCoordinateSearchStore" :{
+                "componentEnabled": true,
+                "showExample": false,
+                "conversionMode": "latitude-band-indicators"
+            },
+            "GKCoordinateSearchStore" :{
+                "componentEnabled": true,
+                "showExample": false
+            }
+        },
         "banner": {
             "BannerWidget": {
                 "label": "Developer Network",
@@ -80,21 +95,6 @@
                 "showTotalResultsCount": false,
                 "searchDelay": 100,
                 "zoomto-point-scale": 100000
-            }
-        },
-        "dn_coordinatesearch":{
-            "DecimalCoordinateSearchStore" :{
-                "componentEnabled": false,
-                "showExample": false
-            },
-            "UTMCoordinateSearchStore" :{
-                "componentEnabled": false,
-                "showExample": false,
-                "conversionMode": "latitude-band-indicators"
-            },
-            "GKCoordinateSearchStore" :{
-                "componentEnabled": false,
-                "showExample": false
             }
         },
         "themes": {
