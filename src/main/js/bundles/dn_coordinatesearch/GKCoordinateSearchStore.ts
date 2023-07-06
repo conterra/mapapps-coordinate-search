@@ -14,23 +14,25 @@
 /// limitations under the License.
 ///
 
-import { SyncInMemoryStore } from "store-api/InMemoryStore";
+import { SyncInMemoryStore, ConstructorOptions } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
-import {load, project} from "esri/geometry/projection.js";
+import { load, project } from "esri/geometry/projection.js";
 import SpatialReference from "esri/geometry/SpatialReference.js";
-
+import type { InjectedReference } from "apprt-core/InjectedReference";
 import { Resultobject } from "./Interfaces";
 
-export default class CoordinateSearchStore extends SyncInMemoryStore {
+export default class CoordinateSearchStore extends SyncInMemoryStore<ConstructorOptions<any>, string> {
 
-    constructor(opts :object) {
+    private _i18n: InjectedReference<any>
+    private _properties: InjectedReference<any>
+
+    constructor(opts: object) {
         super(opts);
         load();
     }
 
-
-    private createResult(point : Point, label : string, result ) : Resultobject {
+    private createResult(point: Point, label: string, result): Resultobject {
         const resultObject = {
             id: result.length,
             longitude: point.longitude,
@@ -61,61 +63,63 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         return QueryResults(results);
     }
 
+    private removeInterDots(coordinate: string) {
+        const subCoord = coordinate.substring(0, 7);
+        const subCoordWithoutPoints = subCoord.replace(/\./g, '');
+        const completeCoord = subCoordWithoutPoints + coordinate.substring(7);
+        return completeCoord.replace(',', '.');
+    }
 
-
-    private calculateGK(X : string, Y: string, result: Array<Resultobject>){
+    private calculateGK(X: string, Y: string, result: Array<Resultobject>) {
 
         const strip = parseInt(X.substring(0, 1), 10);
         const wkidBase = 31466;
         const stripOffset = strip - 2;
-        const wkid =  wkidBase + stripOffset;
+        const wkid = wkidBase + stripOffset;
 
-        const point= new Point({
-            x: parseFloat(X),
-            y: parseFloat(Y),
+        const point = new Point({
+            x: parseFloat(this.removeInterDots(X)),
+            y: parseFloat(this.removeInterDots(Y)),
             spatialReference: wkid
         });
-        const newPoint= project(point, SpatialReference.WGS84);
-        const label = X +", " +Y;
+        const newPoint = project(point, SpatialReference.WGS84);
+        const label = X + ", " + Y;
 
         return this.createResult(newPoint, label, result);
     }
-    query(query = {}, options = {}) : any{
+    query(query = {}, options = {}): any {
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
 
-        const possibleXRegex = /(?<![\d])[2-5]\d{6}\.?\d+(?![\d])/g;
+        const possibleXRegex = /(?<![\d])([2-5]\d{6}([\.\,]\d+)?|[2-5]\.\d{3}\.\d{3}([\.\,]\d+)?)(?![\d])/g;
 
-        const possibleYRegex = /(?<![\d])[5]\d{6}\.?\d+|[6][0-2]\d{5}\.?\d+(?![\d])/g;
-
+        // eslint-disable-next-line max-len
+        const possibleYRegex = /(?<![\d])([5]\d{6}([\.\,]\d+)?|[6][0-2]\d{5}([\.\,]\d+)?|[5]\.\d{3}\.\d{3}([\.\,]\d+)?|[6]\.[0-2]\d{2}\.\d{3}([\.\,]\d+)?)(?![\d])/g;
 
         const result = [];
 
         const possibleX = searchString.match(possibleXRegex);
         const possibleY = searchString.match(possibleYRegex);
 
-        if (possibleX && possibleY){
-            if (possibleY.length == 2){
+        if (possibleX && possibleY) {
+            if (possibleY.length == 2) {
                 result.push(this.calculateGK(possibleX[0], possibleY[1], result));
                 result.push(this.calculateGK(possibleX[1], possibleY[0], result));
             }
-            else if (possibleX.length == 2){
-                if(possibleX[0] == possibleY[0]){
+            else if (possibleX.length == 2) {
+                if (possibleX[0] == possibleY[0]) {
                     result.push(this.calculateGK(possibleX[1], possibleY[0], result));
                 }
-                else{
+                else {
                     result.push(this.calculateGK(possibleX[0], possibleY[0], result));
                 }
             }
-
         }
 
-        if (result.length==0 && this._properties.showExample){
+        if (result.length == 0 && this._properties.showExample) {
             return this.returnExample(searchString, result);
         }
-        else{
+        else {
             return QueryResults(result);
         }
-
     }
-
 }

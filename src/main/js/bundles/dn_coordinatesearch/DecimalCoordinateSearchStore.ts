@@ -15,22 +15,25 @@
 /// limitations under the License.
 ///
 
-import { SyncInMemoryStore } from "store-api/InMemoryStore";
+import { SyncInMemoryStore, ConstructorOptions } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
 import Point from "esri/geometry/Point";
-import {load, fromLatitudeLongitude}from "esri/geometry/coordinateFormatter";
-
+import { load, fromLatitudeLongitude } from "esri/geometry/coordinateFormatter";
+import type { InjectedReference } from "apprt-core/InjectedReference";
 import { Resultobject } from "./Interfaces";
 
 
-export default class CoordinateSearchStore extends SyncInMemoryStore {
+export default class CoordinateSearchStore extends SyncInMemoryStore<ConstructorOptions<any>, string> {
+
+    private _i18n: InjectedReference<any>
+    private _properties: InjectedReference<any>
 
     constructor(opts: object) {
         super(opts);
         load();
     }
 
-    private parseCoord(input: string) : Array<string> {
+    private parseCoord(input: string): Array<string> {
         const parts: Array<string> = input.match(/[+-]?\d+(\.\d+)?/g);
 
         return parts;
@@ -60,11 +63,11 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         const geometryObject = new Point({ longitude: longitude, latitude: latitude });
 
         let text = "";
-        if (latitudeString){
+        if (latitudeString) {
             text = latitudeString + ", " + longitudeString;
         }
         else {
-            text =searchString;
+            text = searchString;
         }
 
         const resultObject = {
@@ -80,8 +83,8 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
     }
 
     private getLatLng(latString: string, lngString: string, method: string): object | null {
-        latString = latString.trim();
-        lngString = lngString.trim();
+        latString = latString.trim().replace(",", ".");
+        lngString = lngString.trim().replace(",", ".");
 
         let lat = null;
         let lng = null;
@@ -129,7 +132,46 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         return QueryResults(results);
     }
 
+    private detectFormat(searchString: string) {
+        const isLatDMS = /(?<![\d])([\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[NSsn]?)(?![\d])/g;
+        const isLngDMS = /(?<![\d])([\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[EWewOo]?(?![\d]))/g;
 
+        const isLatDDS = /(?<![\d])([\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)([\.\,]\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?)(?![\d])/g;
+        const isLngDDS = /(?<![\d])([\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)([\.\,]\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWewOo]?)(?![\d])/g;
+
+        const isLatDD = /(?<![\d])([\+-]?\s?(([1-8]?\d)([\.\,]\d{1,})?|90)\s?[:|°]?\s?[NSsn]?)(?![\d])/g;
+        const isLngDD = /(?<![\d])([\+-]?\s?((1?[0-7]?\d)([\.\,]\d{1,})?|180)\s?[:|°]?\s?[EWewOo]?)(?![\d])/g;
+
+        let method = "";
+
+        let possibleLatString = searchString.match(isLatDMS);
+        let possibleLngString = searchString.match(isLngDMS);
+        if (possibleLatString && possibleLngString) {
+            method = "DMS";
+        }
+        else {
+            possibleLatString = searchString.match(isLatDDS);
+            possibleLngString = searchString.match(isLngDDS);
+            if (possibleLatString && possibleLngString) {
+                method = "DDM";
+            }
+            else {
+                possibleLatString = searchString.match(isLatDD);
+                possibleLngString = searchString.match(isLngDD);
+                if (possibleLatString && possibleLngString) {
+                    method = "DD";
+                }
+                else {
+                    return { method };
+                }
+            }
+        }
+
+        const possibleLatStrings = possibleLatString.map(s => s.trim());
+        const possibleLngStrings = possibleLngString.map(s => s.trim());
+
+        return { method, possibleLatStrings, possibleLngStrings };
+    }
 
     public query(query = {}, options = {}): any {
         const results = [];
@@ -137,57 +179,35 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
         const point = fromLatitudeLongitude(searchString);
 
-        if (point){
+        if (point) {
             return QueryResults(this.addResultObject(results, point.latitude, point.longitude, null, null, searchString));
         }
-        else{
+        else {
             const isLat = /[N|S]/i;
-            const isLng = /[W|E]/i;
+            const isLng = /[W|E|O]/i;
 
             let lat = "";
             let lng = "";
-
-            const isLatDMS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[NSsn]?(?![\d])/g;
-            const isLngDMS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[EWew]?(?![\d])/g;
-
-            const isLatDDS = /(?<![\d])[\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?(?![\d])/g;
-            const isLngDDS = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWew]?(?![\d])/g;
-
-            const isLatDD = /(?<![\d])[\+-]?\s?(([1-8]?\d)(\.\d{1,})?|90)\s?[:|°]?\s?[NSsn]?(?![\d])/g;
-            const isLngDD = /(?<![\d])[\+-]?\s?((1?[0-7]?\d)(\.\d{1,})?|180)\s?[:|°]?\s?[EWew]?(?![\d])/g;
-
             let latString = "";
             let lngString = "";
-
+            let possibleLatString = [];
+            let possibleLngString = [];
             let method = "";
-            let possibleLatString = searchString.match(isLatDMS);
-            let possibleLngString = searchString.match(isLngDMS);
-            if (possibleLatString && possibleLngString) {
-                method = "DMS";
-            }
-            else {
-                possibleLatString = searchString.match(isLatDDS);
-                possibleLngString = searchString.match(isLngDDS);
-                if (possibleLatString && possibleLngString) {
-                    method = "DDM";
+
+            const format = this.detectFormat(searchString);
+
+            if (format.method) {
+                possibleLatString = format.possibleLatStrings;
+                possibleLngString = format.possibleLngStrings;
+                method = format.method;
+            } else {
+                if (this._properties.showExample) {
+                    return this.returnExample(searchString, results);
                 }
                 else {
-                    possibleLatString = searchString.match(isLatDD);
-                    possibleLngString = searchString.match(isLngDD);
-                    if (possibleLatString && possibleLngString) {
-                        method = "DD";
-                    }
-                    else if (this._properties.showExample){
-                        return this.returnExample(searchString, results);
-                    }
-                    else {
-                        return QueryResults([]);
-                    }
+                    return QueryResults([]);
                 }
             }
-
-            possibleLatString = possibleLatString.map(s => s.trim());
-            possibleLngString = possibleLngString.map(s => s.trim());
 
             let hasDir = false;
 
@@ -207,18 +227,20 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
             }
 
             if (latString == "" && hasDir) {
-                const lngTest = lngString.substring(0, lngString.length - 2);
+                const lngTest = lngString.substring(0, lngString.length - 1);
+                const lngTest2 = lngString.substring(0, lngString.length - 2);
                 for (lat of possibleLatString) {
-                    if (!(lngTest == lat)) {
+                    if (!(lngTest == lat) && !(lngTest2 == lat)) {
                         latString = lat;
                         break;
                     }
                 }
             }
             else if (lngString == "" && hasDir) {
-                const latTest = latString.substring(0, lngString.length - 2);
+                const latTest = latString.substring(0, latString.length - 1);
+                const latTest2 = latString.substring(0, latString.length - 2);
                 for (lng of possibleLngString) {
-                    if (!(latTest == lng)) {
+                    if (!(latTest == lng) && !(latTest2 == lng)) {
                         lngString = lng;
                         break;
                     }
@@ -262,8 +284,6 @@ export default class CoordinateSearchStore extends SyncInMemoryStore {
         if (results.length == 0 && this._properties.showExample) {
             return this.returnExample(searchString, results);
         }
-
         return QueryResults(results);
     }
-
 }
