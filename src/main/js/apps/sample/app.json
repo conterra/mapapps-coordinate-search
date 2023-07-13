@@ -1,9 +1,5 @@
 {
     "load": {
-        "bundleLocations": [
-            "localbundles",
-            "bundles"
-        ],
         "allowedBundles": [
             "system",
             "console",
@@ -25,21 +21,23 @@
             "search-ui",
             "locator-store",
             "toc",
+            "coordinateviewer",
+            "coordinateconversion",
             "dn_coordinatesearch"
         ]
     },
     "bundles": {
-        "dn_coordinatesearch":{
-            "DecimalCoordinateSearchStore" :{
+        "dn_coordinatesearch": {
+            "DecimalCoordinateSearchStore": {
                 "componentEnabled": true,
                 "showExample": false
             },
-            "UTMCoordinateSearchStore" :{
+            "UTMCoordinateSearchStore": {
                 "componentEnabled": true,
                 "showExample": false,
                 "conversionMode": "latitude-band-indicators"
             },
-            "GKCoordinateSearchStore" :{
+            "GKCoordinateSearchStore": {
                 "componentEnabled": true,
                 "showExample": false
             }
@@ -107,7 +105,7 @@
         },
         "toc": {
             "Config": {
-                "showBasemaps" : true,
+                "showBasemaps": true,
                 "showLayerLegend": true
             }
         },
@@ -117,6 +115,7 @@
                     {
                         "id": "mapview_tools",
                         "tools": [
+                            "coordinateconversionToggleTool",
                             "locateMeTool",
                             "zoomInTool",
                             "zoomOutTool",
