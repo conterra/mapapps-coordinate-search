@@ -40,8 +40,8 @@ import { Resultobject } from "./Interfaces";
 
 export default class CoordinateSearchStore extends SyncInMemoryStore<ConstructorOptions<any>, string> {
 
-    private _i18n: InjectedReference<any>
-    private _properties: InjectedReference<any>
+    private _i18n: InjectedReference<any>;
+    private _properties: InjectedReference<any>;
 
     constructor(opts: object) {
         super(opts);
