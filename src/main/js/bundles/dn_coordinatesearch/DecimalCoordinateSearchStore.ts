@@ -35,18 +35,29 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
 
     private parseCoord(input: string): Array<string> {
         const parts: Array<string> = input.match(/[+-]?\d+(\.\d+)?/g);
-
         return parts;
     }
 
-    private convertDMSToDD(degrees: string, minutes: string, seconds: string, input: string): any {
-        const dd = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60);
+    private convertDMSToDD(degrees: string, minutes: string, seconds: string, input: string): number {
+        let dd =0;
+        if(parseFloat(degrees) <0 ){
+            dd = (parseFloat(degrees)*-1 + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60))*-1;
+        }
+        else{
+            dd = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / (60 * 60);
+        }
 
         return this.adjustSorW(dd, input);
     }
 
-    private convertDDMToDD(degrees: string, minutes: string, input: string): any {
-        const dd = parseFloat(degrees) + parseFloat(minutes) / 60;
+    private convertDDMToDD(degrees: string, minutes: string, input: string): number {
+        let dd =0;
+        if(parseFloat(degrees) <0 ){
+            dd = (parseFloat(degrees)*-1 + parseFloat(minutes) / 60)*-1;
+        }
+        else{
+            dd = parseFloat(degrees) + parseFloat(minutes) / 60 ;
+        }
 
         return this.adjustSorW(dd, input);
     }
@@ -173,6 +184,106 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         return { method, possibleLatStrings, possibleLngStrings };
     }
 
+    private extractCoordinatesfromString(searchString, results){
+        const isLat = /[N|S]/i;
+        const isLng = /[W|E|O]/i;
+
+        let lat = "";
+        let lng = "";
+        let latString = "";
+        let lngString = "";
+        let possibleLatString = [];
+        let possibleLngString = [];
+        let method = "";
+
+        const format = this.detectFormat(searchString);
+
+        if (format.method) {
+            possibleLatString = format.possibleLatStrings;
+            possibleLngString = format.possibleLngStrings;
+            method = format.method;
+        } else {
+            if (this._properties.showExample) {
+                return this.returnExample(searchString, results);
+            }
+            else {
+                return QueryResults([]);
+            }
+        }
+
+        let hasDir = false;
+
+        for (lat of possibleLatString) {
+            if (isLat.test(lat)) {
+                latString = lat;
+                hasDir = true;
+                break;
+            }
+        }
+        for (lng of possibleLngString) {
+            if (isLng.test(lng)) {
+                hasDir = true;
+                lngString = lng;
+                break;
+            }
+        }
+
+        if (latString == "" && hasDir) {
+            const lngTest = lngString.substring(0, lngString.length - 1);
+            const lngTest2 = lngString.substring(0, lngString.length - 2);
+            for (lat of possibleLatString) {
+                if (!(lngTest == lat) && !(lngTest2 == lat)) {
+                    latString = lat;
+                    break;
+                }
+            }
+        }
+        else if (lngString == "" && hasDir) {
+            const latTest = latString.substring(0, latString.length - 1);
+            const latTest2 = latString.substring(0, latString.length - 2);
+            for (lng of possibleLngString) {
+                if (!(latTest == lng) && !(latTest2 == lng)) {
+                    lngString = lng;
+                    break;
+                }
+            }
+        }
+
+        if (latString && lngString) {
+            const latlng = this.getLatLng(latString, lngString, method);
+            if (latlng) {
+                this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
+            }
+        }
+        else if (hasDir == false) {
+
+            if (possibleLatString.length == 2) {
+                latString = possibleLatString[0];
+                lngString = possibleLatString[1];
+                let latlng = this.getLatLng(latString, lngString, method);
+                this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
+                latString = possibleLatString[1];
+                lngString = possibleLatString[0];
+                latlng = this.getLatLng(latString, lngString, method);
+                this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
+            }
+            else if (possibleLatString.length == 1) {
+                latString = possibleLatString[0];
+                for (lng of possibleLngString) {
+                    if (!(lng == latString)) {
+                        lngString = lng;
+                        break;
+                    }
+                }
+                const latlng = this.getLatLng(latString, lngString, method);
+                if (latlng) {
+                    this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
+                }
+            }
+        }
+        return results;
+    }
+
     public query(query = {}, options = {}): any {
         const results = [];
 
@@ -183,104 +294,8 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
             return QueryResults(this.addResultObject(results, point.latitude, point.longitude, null, null, searchString));
         }
         else {
-            const isLat = /[N|S]/i;
-            const isLng = /[W|E|O]/i;
-
-            let lat = "";
-            let lng = "";
-            let latString = "";
-            let lngString = "";
-            let possibleLatString = [];
-            let possibleLngString = [];
-            let method = "";
-
-            const format = this.detectFormat(searchString);
-
-            if (format.method) {
-                possibleLatString = format.possibleLatStrings;
-                possibleLngString = format.possibleLngStrings;
-                method = format.method;
-            } else {
-                if (this._properties.showExample) {
-                    return this.returnExample(searchString, results);
-                }
-                else {
-                    return QueryResults([]);
-                }
-            }
-
-            let hasDir = false;
-
-            for (lat of possibleLatString) {
-                if (isLat.test(lat)) {
-                    latString = lat;
-                    hasDir = true;
-                    break;
-                }
-            }
-            for (lng of possibleLngString) {
-                if (isLng.test(lng)) {
-                    hasDir = true;
-                    lngString = lng;
-                    break;
-                }
-            }
-
-            if (latString == "" && hasDir) {
-                const lngTest = lngString.substring(0, lngString.length - 1);
-                const lngTest2 = lngString.substring(0, lngString.length - 2);
-                for (lat of possibleLatString) {
-                    if (!(lngTest == lat) && !(lngTest2 == lat)) {
-                        latString = lat;
-                        break;
-                    }
-                }
-            }
-            else if (lngString == "" && hasDir) {
-                const latTest = latString.substring(0, latString.length - 1);
-                const latTest2 = latString.substring(0, latString.length - 2);
-                for (lng of possibleLngString) {
-                    if (!(latTest == lng) && !(latTest2 == lng)) {
-                        lngString = lng;
-                        break;
-                    }
-                }
-            }
-
-            if (latString && lngString) {
-                const latlng = this.getLatLng(latString, lngString, method);
-                if (latlng) {
-                    this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
-                }
-            }
-            else if (hasDir == false) {
-
-                if (possibleLatString.length == 2) {
-                    latString = possibleLatString[0];
-                    lngString = possibleLatString[1];
-                    let latlng = this.getLatLng(latString, lngString, method);
-                    this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
-                    latString = possibleLatString[1];
-                    lngString = possibleLatString[0];
-                    latlng = this.getLatLng(latString, lngString, method);
-                    this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
-                }
-                else if (possibleLatString.length == 1) {
-                    latString = possibleLatString[0];
-                    for (lng of possibleLngString) {
-                        if (!(lng == latString)) {
-                            lngString = lng;
-                            break;
-                        }
-                    }
-                    const latlng = this.getLatLng(latString, lngString, method);
-                    if (latlng) {
-                        this.addResultObject(results, latlng.lat, latlng.lng, latString, lngString, searchString);
-                    }
-                }
-            }
+            this.extractCoordinatesfromString(searchString, results);
         }
-
         if (results.length == 0 && this._properties.showExample) {
             return this.returnExample(searchString, results);
         }

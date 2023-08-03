@@ -15,3 +15,5 @@
 ///
 
 ///
+
+import "./DecimalCoordianteSearchStore.spec";
