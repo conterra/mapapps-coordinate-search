@@ -50,12 +50,14 @@
                 "tooltip" : "Open information",
                 "iconClass": "icon-custom-info-info",
                 "widgetSettings" : {
-                    "content" : "Dieses Bundle ermöglicht die Suche nach Koordinaten im Suchfeld. \r\n Dabei werden folgende Kooridnatenformate unterstützt folgende Notationen: Breitengrad-Längengrad, UTM und Gauss Krüger. Bei der Breitengrad-Längengrad Notation können die Koordinaten im Format Dezimalgrad, Grad und Dezimalminuten oder Grad, Minuten und Sekunden angegeben werden. Bei Breitengrad-Längengrad und UTM wird anenommen, dass die Koordinaten in WGS84 sind. \n Bei  Folgend ein paar Beispiele: \n Breitengrad-Längengrad: \n 51.935137 ° N 7.652506 ° E \n 51° 56.108220 N 7° 39.150360 E \n 51° 56' 6.4932 N 7° 39' 9.0216 E \n UTM: \n 32U 407362.203 5754681.725 \n Gauß-Krüger: \n  3407401.598 5756544.098",
+                    "content" : "<p>Dieses Bundle ermöglicht die Suche nach Koordinaten im Suchfeld.<br>Dabei werden Kooridnaten in den Notationen Breitengrad-Längengrad, UTM und Gauss Krüger unterstützt.<br>Bei der Breitengrad-Längengrad Notation können die Koordinaten im Format Dezimalgrad, Grad und Dezimalminuten oder Grad, Minuten und Sekunden angegeben werden. Bei Breitengrad-Längengrad und UTM wird anenommen, dass die Koordinaten in WGS84 sind.<br><br>Folgend einige Beispiel-Eingaben:<br><br>Breitengrad-Längengrad:<br>51.935137 ° N 7.652506 ° E<br>51° 56.108220 N 7° 39.150360 E<br>51° 56' 6.4932 N 7° 39' 9.0216 E<br><br>UTM:<br>32U 407362.203 5754681.725<br><br>Gauß-Krüger:<br>3407401.598 5756544.098</p>",
                     "window" : {
                         "title" : "Informationen zur Koordinatensuche",
                         "marginBox": {
-                            "w": 600,
-                            "h": 600
+                            "w": 400,
+                            "h": 500,
+                            "b": 75,
+                            "r": 75
                         }
                     }
                 },
