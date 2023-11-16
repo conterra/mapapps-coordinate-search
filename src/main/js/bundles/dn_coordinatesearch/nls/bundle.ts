@@ -31,9 +31,14 @@ module.exports = {
                 help: "No coordinates found. Try the following format \n (32U 407362 5754680)"
             },
             gk: {
-                storeTitle: "Koordinatensuche GK (Easting, Northing)",
+                storeTitle: "Coordinate Search GK (Easting, Northing)",
                 storeDescription: "Store for finding locations based on Gauss Krüger coordinates.",
                 help: "No coordinates found. Try the following format \n (3407402.332, 5756542.860)"
+            },
+            pm: {
+                storeTitle: "Coordinate Search Pseudo Mercator (Esting, Northing)",
+                storeDescription: "SStore for finding locations based on Pseudo-Mercator Koordinaten.",
+                help: "No coordinates found. Try the following format \n (851872.403 6788406.058)"
             }
         }
     }),

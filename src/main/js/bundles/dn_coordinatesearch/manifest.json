@@ -143,6 +143,49 @@
                     ]
                 }
             }
+        },
+        {
+            "name": "PseudoMercatorCoordinateSearchStore",
+            "provides": [
+                "ct.api.Store"
+            ],
+            "propertiesConstructor": true,
+            "enabled": false,
+            "properties": {
+                "id": "pmcoordinatesearchstore",
+                "title": "${ui.pm.storeTitle}",
+                "showExample": false,
+                "description": "${ui.pm.storeDescription}",
+                "useIn": [
+                    "search"
+                ],
+                "searchAttribute": "coordinates",
+                "idProperty": "id",
+                "metadata": {
+                    "fields": [
+                        {
+                            "title": "ID",
+                            "name": "id",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Longitude",
+                            "name": "longitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Latitude",
+                            "name": "latitude",
+                            "type": "number"
+                        },
+                        {
+                            "title": "Coordinates",
+                            "name": "coordinates",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
         }
     ]
 }

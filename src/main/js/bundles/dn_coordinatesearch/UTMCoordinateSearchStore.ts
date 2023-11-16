@@ -37,6 +37,7 @@ import * as projection from "esri/geometry/projection.js";
 import SpatialReference from "esri/geometry/SpatialReference.js";
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import { Resultobject } from "./Interfaces";
+import Locale from "apprt-core/Locale";
 
 export default class CoordinateSearchStore extends SyncInMemoryStore<ConstructorOptions<any>, string> {
 
@@ -60,12 +61,18 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         return resultObject;
     }
 
-    private removeInterDots(coordinate: string) {
-        if (coordinate.includes(",") || coordinate.split(".").length > 2) {
-            coordinate = coordinate.replace(/\./g, '');
-            return coordinate.replace(',', '.');
+    private removeThosuandsSeperators(searchString: string) {
+        const currentLang = Locale.getCurrent().getLocaleString();
+        if (currentLang == "de"){
+            if(searchString.split(".").length>3){
+                searchString = searchString.replaceAll(".", "");
+            }
+            searchString = searchString.replaceAll(",", ".");
         }
-        return coordinate;
+        else{
+            searchString= searchString.replaceAll(",", "");
+        }
+        return searchString;
     }
 
     private reprojectUTMToWGS84(zoneNumber: string, zoneIndicator: string, right: string, high: string) {
@@ -120,7 +127,8 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
     }
 
     public query(query = {}, options = {}): any {
-        const searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
+        let searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
+        searchString = this.removeThosuandsSeperators(searchString);
 
         let point = fromUtm(searchString, null, this._properties.conversionMode);
         let result: Array<Resultobject> = [];
@@ -129,13 +137,12 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         }
         else {
             // eslint-disable-next-line max-len
-            const isUTM = /(?<![\d])\s?(?<zoneNumber>(([1-5]?\d)|60))\s?(?<zoneIndicator>[A-Z])\s?(?<right>(\d{6}|\d{3}\.\d{3})([\.\,]\d+)?)\s(?<high>(\d{1,3}(\.\d{3}){0,2}|\d{1,7})([\.\,]\d+)?)(?![\d])/g;
+            const isUTM = /(?<![\d])\s?(?<zoneNumber>(([1-5]?\d)|60))\s?(?<zoneIndicator>[A-Z])\s?(?<right>(\d{6}([\.]\d+)?))\s(?<high>\d{1,7}([\.]\d+)?)(?![\d])/g;
 
             for (const match of searchString.matchAll(isUTM)) {
-                console.info(match);
 
-                const right: string = this.removeInterDots(match.groups.right);
-                const high: string = this.removeInterDots(match.groups.high);
+                const right: string = match.groups.right;
+                const high: string = match.groups.high;
 
                 const possibleUTMString = `${match.groups.zoneNumber}  ${match.groups.zoneIndicator} ${right} ${high}`;
 

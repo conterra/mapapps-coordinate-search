@@ -34,6 +34,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
     }
 
     private createResult(point: Point, label: string, result): Resultobject {
+
         const resultObject = {
             id: result.length,
             longitude: point.longitude,
@@ -55,7 +56,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
                 id: results.length,
                 longitude: longitude,
                 latitude: latitude,
-                coordinates: this._i18n.get().ui.gk.help,
+                coordinates: this._i18n.get().ui.pm.help,
                 geometry: geometryObject
             };
             results.push(resultObject);
@@ -64,12 +65,10 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         return QueryResults(results);
     }
 
-    private removeThosuandsSeperators(searchString: string) {
+    private removeThousandsSeperators(searchString: string) {
         const currentLang = Locale.getCurrent().getLocaleString();
         if (currentLang == "de"){
-            if(searchString.split(".").length>3){
-                searchString = searchString.replaceAll(".", "");
-            }
+            searchString = searchString.replaceAll(".", "");
             searchString = searchString.replaceAll(",", ".");
         }
         else{
@@ -78,52 +77,41 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         return searchString;
     }
 
-    private calculateGK(X: string, Y: string, result: Array<Resultobject>) {
-
-        const strip = parseInt(X.substring(0, 1), 10);
-        const wkidBase = 31466;
-        const stripOffset = strip - 2;
-        const wkid = wkidBase + stripOffset;
+    private calculatePM(X: string, Y: string, result: Array<Resultobject>) {
 
         const point = new Point({
             x: parseFloat(X),
             y: parseFloat(Y),
-            spatialReference: wkid
+            spatialReference: 3857
         });
         const newPoint = project(point, SpatialReference.WGS84);
-        const label = X + ", " + Y;
+        let label = X + " " + Y;
+        const currentLang = Locale.getCurrent().getLocaleString();
+        if (currentLang == "de"){
+            label = label.replaceAll(".", ",");
+        }
 
         return this.createResult(newPoint, label, result);
     }
+
+
     query(query = {}, options = {}): any {
-        let searchString = query?.coordinates.$suggest.replace(/\s+/g, ' ');
 
-        searchString = this.removeThosuandsSeperators(searchString);
+        let searchString = query?.coordinates.$suggest.replaceAll(":", " ");
+        searchString = searchString.replace(/\s+/g, ' ');
+        searchString = this.removeThousandsSeperators(searchString);
 
-        const possibleXRegex = /(?<![\d])[2-5]\d{6}([\.\,]\d+)?(?![\d])/g;
-
-        // eslint-disable-next-line max-len
-        const possibleYRegex = /(?<![\d])[5]\d{6}([\.\,]\d+)?(?![\d])/g;
+        const possibleCoordinatesRegex = /(?<![\d,.])[-]?[1-2]?\d{1,7}([\.]\d+)?(?![\d,.])/g;
 
         const result = [];
 
-        const possibleX = searchString.match(possibleXRegex);
-        const possibleY = searchString.match(possibleYRegex);
+        const possibleCoordinates = searchString.match(possibleCoordinatesRegex);
 
-        if (possibleX && possibleY) {
-            if (possibleY.length == 2) {
-                result.push(this.calculateGK(possibleX[0], possibleY[1], result));
-                //result.push(this.calculateGK(possibleX[1], possibleY[0], result));
-            }
-            else if (possibleX.length == 2) {
-                if (possibleX[0] == possibleY[0]) {
-                    result.push(this.calculateGK(possibleX[1], possibleY[0], result));
-                }
-                else {
-                    result.push(this.calculateGK(possibleX[0], possibleY[0], result));
-                }
-            }
+        if (possibleCoordinates && possibleCoordinates.length == 2) {
+            result.push(this.calculatePM(possibleCoordinates[0], possibleCoordinates[1], result));
+               //result.push(this.calculateGK(possibleX[1], possibleY[0], result));
         }
+
 
         if (result.length == 0 && this._properties.showExample) {
             return this.returnExample(searchString, result);

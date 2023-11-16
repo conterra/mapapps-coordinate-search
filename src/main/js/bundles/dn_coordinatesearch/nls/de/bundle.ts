@@ -32,7 +32,12 @@ module.exports = {
         gk: {
             storeTitle: "Koordinatensuche GK (Rechtswert, Hochwert)",
             storeDescription: "Store zum finden von Standorten basierend auf Gauss Krüger Koordinaten.",
-            help: "Keine Koordinaten gefunden. Probiere folgendes Format \n (3407402.332, 5756542.860)"
+            help: "Keine Koordinaten gefunden. Probiere folgendes Format \n (3407402,332, 5756542,860)"
+        },
+        pm: {
+            storeTitle: "Koordinatensuche Pseudo Mercator (Ost, Nord)",
+            storeDescription: "Store zum finden von Standorten basierend auf Pseudo-Mercator Koordinaten.",
+            help: "Keine Koordinaten gefunden. Probiere folgendes Format \n (851872,403 6788406,058)"
         }
     }
 };
