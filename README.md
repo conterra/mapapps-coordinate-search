@@ -7,7 +7,7 @@ The Coordinate Search bundle adds the functionality to search for coordinates in
 
 
 ## Sample App
-https://demos.conterra.de/mapapps/resources/apps/downloads_coordinatesearch/index.html
+[https://demos.conterra.de/mapapps/resources/apps/downloads_coordinatesearch/index.html](https://demos.conterra.de/mapapps/resources/apps/download_coordinatesearch/index.html)
 
 ![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinatel-search/blob/main/screenshot.JPG)
 
