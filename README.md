@@ -9,12 +9,12 @@ The Coordinate Search bundle adds the functionality to search for coordinates in
 ## Sample App
 https://demos.conterra.de/mapapps/resources/apps/downloads_coordinatesearch/index.html
 
-![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinatel-search/blob/master/screenshot.JPG)
+![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinatel-search/blob/main/screenshot.JPG)
 
 ## Installation Guide
 **Requirement: map.apps 4.12.0**
 
-[dn_coordinatesearch Documentation](https://github.com/conterra/mapapps-coordinate-search/tree/master/src/main/js/bundles/dn_coordinatesearch)
+[dn_coordinatesearch Documentation](https://github.com/conterra/mapapps-coordinate-search/tree/main/src/main/js/bundles/dn_coordinatesearch)
 
 ## Development Guide
 ### Define the mapapps remote base
