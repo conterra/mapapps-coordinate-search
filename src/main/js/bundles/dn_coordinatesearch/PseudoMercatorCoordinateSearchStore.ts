@@ -101,7 +101,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         searchString = searchString.replace(/\s+/g, ' ');
         searchString = this.removeThousandsSeperators(searchString);
 
-        const possibleCoordinatesRegex = /(?<![\d,.])[-]?[1-2]?\d{1,7}([\.]\d+)?(?![\d,.])/g;
+        const possibleCoordinatesRegex = /(?<![\d,.])-?[1-2]?\d{1,7}(\.\d+)?(?![\d,.])/g;
 
         const result = [];
 
@@ -109,7 +109,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
 
         if (possibleCoordinates && possibleCoordinates.length == 2) {
             result.push(this.calculatePM(possibleCoordinates[0], possibleCoordinates[1], result));
-               //result.push(this.calculateGK(possibleX[1], possibleY[0], result));
+            //result.push(this.calculateGK(possibleX[1], possibleY[0], result));
         }
 
 

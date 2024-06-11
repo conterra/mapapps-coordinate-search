@@ -1,9 +1,6 @@
 {
-    "extends": "eslint-config-ct-prodeng",
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-        "no-useless-escape": "off"
-    }
+	"extends": "eslint-config-ct-prodeng",
+	"plugins": [
+		"vue"
+	]
 }

@@ -137,7 +137,7 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
         }
         else {
             // eslint-disable-next-line max-len
-            const isUTM = /(?<![\d])\s?(?<zoneNumber>(([1-5]?\d)|60))\s?(?<zoneIndicator>[A-Z])\s?(?<right>(\d{6}([\.]\d+)?))\s(?<high>\d{1,7}([\.]\d+)?)(?![\d])/g;
+            const isUTM = /(?<!\d)\s?(?<zoneNumber>(([1-5]?\d)|60))\s?(?<zoneIndicator>[A-Z])\s?(?<right>(\d{6}([.]\d+)?))\s(?<high>\d{1,7}([.]\d+)?)(?!\d)/g;
 
             for (const match of searchString.matchAll(isUTM)) {
 

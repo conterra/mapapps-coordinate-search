@@ -145,19 +145,19 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
 
     private detectFormat(searchString: string) {
         // eslint-disable-next-line max-len
-        const isLatDMS = /(?<![\d.,])([\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[NSsn]?)(?![\d.])/g;
+        const isLatDMS = /(?<![\d.,])([+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'′]\s?([1-5]?\d|60)(\.\d+)?|90(\s?[:|°]\s?0\s?[:|'′]\s?0)?)\s?"?\s?[NSsn]?)(?![\d.])/g;
         // eslint-disable-next-line max-len
-        const isLngDMS = /(?<![\d.,])([\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'|′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'|′]\s?0)?)\s?"?\s?[EWewOo]?(?![\d.]))/g;
+        const isLngDMS = /(?<![\d.,])([+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)\s?[:|'′]\s?([1-5]?\d|60)(\.\d+)?|180(\s?[:|°]\s?0\s?[:|'′]\s?0)?)\s?"?\s?[EWewOo]?(?![\d.]))/g;
 
         // eslint-disable-next-line max-len
-        const isLatDDS = /(?<![\d.,])([\+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)([\.\,]\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?)(?![\d.])/g;
+        const isLatDDS = /(?<![\d.,])([+-]?\s?(([1-8]?\d)\s?[:|°]\s?([1-5]?\d|60)([.,]\d+)?|90(\s?[:|°]\s?0)?)\s?["|']?\s?[NSsn]?)(?![\d.])/g;
         // eslint-disable-next-line max-len
-        const isLngDDS = /(?<![\d.,])([\+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)([\.\,]\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWewOo]?)(?![\d.])/g;
+        const isLngDDS = /(?<![\d.,])([+-]?\s?((1?[0-7]?\d)\s?[:|°]\s?([1-5]?\d|60)([.,]\d+)?|180(\s?[:|°]\s?0)?)\s?["|']?\s?[EWewOo]?)(?![\d.])/g;
 
         // eslint-disable-next-line max-len
-        const isLatDD = /(?<![\d.,])([\+-]?\s?(([1-8]?\d)([\.\,]\d{1,})?|90)\s?[:|°]?\s?[NSsn]?)(?![\d.])/g;
+        const isLatDD = /(?<![\d.,])([+-]?\s?(([1-8]?\d)([.,]\d{1,})?|90)\s?[:|°]?\s?[NSsn]?)(?![\d.])/g;
         // eslint-disable-next-line max-len
-        const isLngDD = /(?<![\d.,])([\+-]?\s?((1?[0-7]?\d)([\.\,]\d{1,})?|180)\s?[:|°]?\s?[EWewOo]?)(?![\d.])/g;
+        const isLngDD = /(?<![\d.,])([+-]?\s?((1?[0-7]?\d)([.,]\d{1,})?|180)\s?[:|°]?\s?[EWewOo]?)(?![\d.])/g;
 
         let method = "";
 

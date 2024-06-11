@@ -100,10 +100,10 @@ export default class CoordinateSearchStore extends SyncInMemoryStore<Constructor
 
         searchString = this.removeThosuandsSeperators(searchString);
 
-        const possibleXRegex = /(?<![\d])[2-5]\d{6}([\.\,]\d+)?(?![\d])/g;
+        const possibleXRegex = /(?<!\d)[2-5]\d{6}([.,]\d+)?(?!\d)/g;
 
         // eslint-disable-next-line max-len
-        const possibleYRegex = /(?<![\d])[5]\d{6}([\.\,]\d+)?(?![\d])/g;
+        const possibleYRegex = /(?<!\d)5\d{6}([.,]\d+)?(?!\d)/g;
 
         const result = [];
 
