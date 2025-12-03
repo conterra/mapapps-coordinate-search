@@ -1,18 +1,13 @@
+[![devnet-bundle-snapshot](https://github.com/conterra/mapapps-coordinate-search/actions/workflows/devnet-bundle-snapshot.yml/badge.svg)](https://github.com/conterra/mapapps-coordinate-search/actions/workflows/devnet-bundle-snapshot.yml)
+![Static Badge](https://img.shields.io/badge/requires_map.apps-4.20.0-e5e5e5?labelColor=%233E464F&logoColor=%23e5e5e5)
+![Static Badge](https://img.shields.io/badge/tested_for_map.apps-4.20.0-%20?labelColor=%233E464F&color=%232FC050)
 # Coordinate Search
 The Coordinate Search bundle adds the functionality to search for coordinates in multiple reference systems.
-
-## Build Status
-
-![example workflow](https://github.com/conterra/mapapps-devnet-blueprint/actions/workflows/devnet-bundle-snapshot.yml/badge.svg)
-
 
 ## Sample App
 https://demos.conterra.de/mapapps/resources/apps/public_demo_coordinatesearch/index.html
 
 ![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinate-search/blob/main/screenshot.JPG)
-
-## Installation Guide
-**Requirement: map.apps 4.12.0**
 
 [dn_coordinatesearch Documentation](https://github.com/conterra/mapapps-coordinate-search/tree/main/src/main/js/bundles/dn_coordinatesearch)
 
