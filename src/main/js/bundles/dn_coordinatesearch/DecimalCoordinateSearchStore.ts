@@ -33,8 +33,8 @@
 
 import { SyncInMemoryStore, ConstructorOptions } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
-import Point from "esri/geometry/Point";
-import { load, fromLatitudeLongitude } from "esri/geometry/coordinateFormatter";
+import Point from "@arcgis/core/geometry/Point";
+import { load, fromLatitudeLongitude } from "@arcgis/core/geometry/coordinateFormatter";
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import { Resultobject } from "./Interfaces";
 

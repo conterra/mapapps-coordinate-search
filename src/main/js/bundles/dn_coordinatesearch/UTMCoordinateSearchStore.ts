@@ -31,10 +31,10 @@
  */
 import { SyncInMemoryStore, ConstructorOptions } from "store-api/InMemoryStore";
 import QueryResults from "store-api/QueryResults";
-import Point from "esri/geometry/Point";
-import { load, fromUtm } from "esri/geometry/coordinateFormatter";
-import * as projection from "esri/geometry/projection.js";
-import SpatialReference from "esri/geometry/SpatialReference.js";
+import Point from "@arcgis/core/geometry/Point";
+import { load, fromUtm } from "@arcgis/core/geometry/coordinateFormatter";
+import * as projection from "@arcgis/core/geometry/projection.js";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference.js";
 import type { InjectedReference } from "apprt-core/InjectedReference";
 import { Resultobject } from "./Interfaces";
 import Locale from "apprt-core/Locale";
