@@ -10,8 +10,8 @@
         "bundle"
     ],
     "dependencies": {
-        "store-api": "^4.12.0",
-        "esri": "^4.20.0"
+        "@arcgis/core": "^4.33.0",
+        "store-api": "^4.20.0"
     },
     "components": [
         {
