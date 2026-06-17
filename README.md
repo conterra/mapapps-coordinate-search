@@ -4,10 +4,10 @@
 # Coordinate Search
 The Coordinate Search bundle adds the functionality to search for coordinates in multiple reference systems.
 
+![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinate-search/blob/main/screenshot.png)
+
 ## Sample App
 https://demos.conterra.de/mapapps/resources/apps/public_demo_coordinatesearch/index.html
-
-![Screenshot Sample App Coordinate Search](https://github.com/conterra/mapapps-coordinate-search/blob/main/screenshot.JPG)
 
 [dn_coordinatesearch Documentation](https://github.com/conterra/mapapps-coordinate-search/tree/main/src/main/js/bundles/dn_coordinatesearch)
 
